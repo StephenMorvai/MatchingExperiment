@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 
-<body>
+<body onload = "run();">
 
-	<div>
+	<div id = gameArea>
 		<div id = box>
 		
 		</div>
@@ -19,7 +19,7 @@
 }
 
 
-#box{
+#gameArea{
 
 	width:800px;
 	height:600px;
@@ -31,11 +31,98 @@
 
 }
 
+#box{
+	width:550px;
+	height:550px;
+	
+	margin-Left:125px;
+	margin-Top:25px;
+	
+	background-color: #25f711;
+}
+
 
 </style>
 
 <script>
 
+var moveDiv = function(elem,x,y){
+	elem.style.marginLeft = x + "px";
+	elem.style.marginTop = y + "px";
+}
+var displayDiv = function(elem){
+	elem.style.display = "block";
+}
+var hideDiv = function(elem){
+	elem.style.display = "none";
+}
+
+var createDiv = function(id,w,h,x,y,col){
+	document.body.appendChild(id);
+	id.style.position = "absolute";
+	id.style.width = w + "px";
+	id.style.height = h + "px";
+	id.style.marginLeft = x + "px";
+	id.style.marginTop = y + "px";
+	id.style.backgroundColor = col;
+}
+
+var findLinks = function(tiles,size,goal){
+	for( var i = 0; i <= size - goal; i++){
+		for( var j = 0; j <= size - goal ; j++){
+			
+			var cond = true;
+			for(var k = 1; k < goal; k++){
+				if(tiles[i*size + j].innerHTML != tiles[(i+k)*size + j].innerHTML){
+					cond = false;
+				}
+			}
+			if(cond){
+				for(var k = 0; k < goal; k++){
+					tiles[(i+k)*size + j].style.backgroundColor = "#FF2222";
+				}
+			}
+			
+			cond = true;
+			for(var k = 1; k < goal; k++){
+				if(tiles[i*size + j].innerHTML != tiles[i*size + j + k].innerHTML){
+					cond = false;
+				}
+			}
+			if(cond){
+				for(var k = 0; k < goal; k++){
+					tiles[i*size + j + k].style.backgroundColor = "#FF2222";
+				}
+			}
+			
+		}
+	}
+}
+
+var run = function(){
+
+	var size = 10;
+	var goal = 3;
+	var jewels = 4;
+	var tiles = [];
+
+	for( var i = 0; i < size; i++){
+		for( var j = 0; j < size; j++){
+			tiles[i*size + j] = document.createElement("div");
+			createDiv(tiles[i*size + j], 500/size ,500/size,(500/size)*j + 150,(500/size)*i + 50,"#00DA55");
+			displayDiv(tiles[i*size+j]);
+			tiles[i*size + j].style.border = "2px solid";
+			tiles[i*size + j].innerHTML  = Math.floor(Math.random() * jewels);
+			tiles[i*size + j].style.textAlign = "center";
+		}
+	}
+	
+	findLinks(tiles,size,goal);
+
+
+
+
+}
 
 
 </script>
