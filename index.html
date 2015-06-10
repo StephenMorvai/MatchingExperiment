@@ -5,8 +5,9 @@
 
 	<div id = gameArea>
 		<div id = box>
-		
+			
 		</div>
+		<h3 id = score>Score: 0</h3>
 	</div>
 
 </body>
@@ -67,7 +68,7 @@ var createDiv = function(id,w,h,x,y,col){
 	id.style.backgroundColor = col;
 }
 
-var findLinks = function(tiles,size,goal){
+var findLinks = function(tiles,size,goal,score){
 	for( var i = 0; i <= size - goal; i++){
 		for( var j = 0; j <= size - goal ; j++){
 			
@@ -81,6 +82,7 @@ var findLinks = function(tiles,size,goal){
 				for(var k = 0; k < goal; k++){
 					tiles[(i+k)*size + j].style.backgroundColor = "#FF2222";
 				}
+				score++;
 			}
 			
 			cond = true;
@@ -93,18 +95,22 @@ var findLinks = function(tiles,size,goal){
 				for(var k = 0; k < goal; k++){
 					tiles[i*size + j + k].style.backgroundColor = "#FF2222";
 				}
+				score++;
 			}
 			
 		}
 	}
+	return score;
 }
+
 
 var run = function(){
 
 	var size = 10;
 	var goal = 3;
-	var jewels = 4;
+	var jewels = 9;
 	var tiles = [];
+	var score = 0;
 
 	for( var i = 0; i < size; i++){
 		for( var j = 0; j < size; j++){
@@ -117,8 +123,8 @@ var run = function(){
 			tiles[i*size + j].style.lineHeight = 500/size + "px";
 		}
 	}
-	
-	findLinks(tiles,size,goal);
+
+		document.getElementById("score").innerHTML = "Score: " + findLinks(tiles,size,goal,score);
 
 
 
