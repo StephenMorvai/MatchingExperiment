@@ -47,6 +47,24 @@
 
 <script>
 
+    var size = 10;
+	var goal = 3;
+	var jewels = 9;
+	var tiles = [];
+	var changes = [];
+	var score = 0;
+	var repeat;
+	var previousClick = -1;
+
+
+
+var cursorX;
+var cursorY;
+document.onmousemove = function(e){
+    cursorX = e.pageX;
+    cursorY = e.pageY;
+}
+
 var moveDiv = function(elem,x,y){
 	elem.style.marginLeft = x + "px";
 	elem.style.marginTop = y + "px";
@@ -68,7 +86,7 @@ var createDiv = function(id,w,h,x,y,col){
 	id.style.backgroundColor = col;
 }
 
-var findLinks = function(tiles,size,goal,score){
+var findLinks = function(){
 	for( var i = 0; i <= size - goal; i++){
 		for( var j = 0; j <= size - goal ; j++){
 			
@@ -81,6 +99,7 @@ var findLinks = function(tiles,size,goal,score){
 			if(cond){
 				for(var k = 0; k < goal; k++){
 					tiles[(i+k)*size + j].style.backgroundColor = "#FF2222";
+					changes[(i+k)*size + j] = 1;
 				}
 				score++;
 			}
@@ -94,6 +113,7 @@ var findLinks = function(tiles,size,goal,score){
 			if(cond){
 				for(var k = 0; k < goal; k++){
 					tiles[i*size + j + k].style.backgroundColor = "#FF2222";
+					changes[i*size + j + k] = 1;
 				}
 				score++;
 			}
@@ -103,14 +123,96 @@ var findLinks = function(tiles,size,goal,score){
 	return score;
 }
 
+var updateBoard = function(){
+	for( var i = 0; i < size; i++){
+		for( var j = 0; j < size; j++){
+			if(changes[i*size + j] == 1){
+				tiles[i*size + j].style.backgroundColor = "#00DA55";
+				tiles[i*size + j].innerHTML  = Math.floor(Math.random() * jewels);
+				changes[i*size + j] = 0;
+			}
+		}
+	}
+	processBoard(1);
+}
+
+var processBoard = function(count){
+	if(count==0){
+		document.getElementById("score").innerHTML = "Score: " + findLinks();
+		repeat = setInterval(updateBoard,1000);
+	}else{
+		clearInterval(repeat);
+	}
+}
+
+var isTouching = function(a,b){
+	if(a%size > 0){
+		if(a-1 == b){
+			return true;
+		}
+	}
+	if(a%size < size - 1){
+		if(a+1 == b){
+			return true;
+		}
+	}
+	if(a >= size){
+		if(a-size == b){
+			return true;
+		}
+	}
+	if(a < size*(size - 1)){
+		if(a+size == b){
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+var click = function(){
+	if(clickedOn(cursorY,50) == -1 || clickedOn(cursorX,150) == -1){
+		tiles[previousClick].style.backgroundColor = "#00DA55";
+		previousClick = -1;
+	}else{
+		num = clickedOn(cursorY,50)*size + clickedOn(cursorX,150);
+		
+		if(previousClick === -1){
+			previousClick = num;
+			tiles[num].style.backgroundColor = "#FFFF22";
+		}else if(isTouching(num,previousClick)){
+			tiles[num].style.backgroundColor = "#00DA55";
+			tiles[previousClick].style.backgroundColor = "#00DA55";
+			previousClick = -1;
+			//switchTiles();
+		}else{
+			tiles[num].style.backgroundColor = "#00DA55";
+			tiles[previousClick].style.backgroundColor = "#00DA55";
+			previousClick = -1;
+		}
+	}
+	
+	
+}
+
+/**
+Determines which tile was clickedOn
+Only for one dimension
+To determine the excat one this should be 
+repeated for both mouse X and mouse Y
+*/
+var clickedOn = function(mos,offset){
+    for(var i = 0; i < size; i++){
+        if(mos > i*500/size + offset && mos < (i+1)*500/size + offset){
+            return i;
+        } 
+    }
+	return -1;
+}
 
 var run = function(){
 
-	var size = 10;
-	var goal = 3;
-	var jewels = 9;
-	var tiles = [];
-	var score = 0;
+	document.body.onclick = function() {click()};
 
 	for( var i = 0; i < size; i++){
 		for( var j = 0; j < size; j++){
@@ -121,13 +223,13 @@ var run = function(){
 			tiles[i*size + j].innerHTML  = Math.floor(Math.random() * jewels);
 			tiles[i*size + j].style.textAlign = "center";
 			tiles[i*size + j].style.lineHeight = 500/size + "px";
+			changes[i*size + j] = 0;
 		}
 	}
 
-		document.getElementById("score").innerHTML = "Score: " + findLinks(tiles,size,goal,score);
-
-
-
+		processBoard(0);
+		
+		//body.onclick = function(){click()};
 
 }
 
