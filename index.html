@@ -20,6 +20,15 @@
 }
 
 
+div{
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 #gameArea{
 
 	width:800px;
@@ -53,8 +62,10 @@
 	var tiles = [];
 	var changes = [];
 	var score = 0;
+	var previousScore = 0;
 	var repeat;
 	var previousClick = -1;
+	var proceed = true;
 
 
 
@@ -87,8 +98,8 @@ var createDiv = function(id,w,h,x,y,col){
 }
 
 var findLinks = function(){
-	for( var i = 0; i <= size - goal; i++){
-		for( var j = 0; j <= size - goal ; j++){
+	for( var i = 0; i <= size - goal ; i++){
+		for( var j = 0; j < size ; j++){
 			
 			var cond = true;
 			for(var k = 1; k < goal; k++){
@@ -104,7 +115,15 @@ var findLinks = function(){
 				score++;
 			}
 			
-			cond = true;
+			
+		}
+	}
+	
+	for( var i = 0; i < size; i++){
+		for( var j = 0; j <= size - goal; j++){
+			
+			
+			var cond = true;
 			for(var k = 1; k < goal; k++){
 				if(tiles[i*size + j].innerHTML != tiles[i*size + j + k].innerHTML){
 					cond = false;
@@ -120,6 +139,7 @@ var findLinks = function(){
 			
 		}
 	}
+	
 	return score;
 }
 
@@ -133,16 +153,29 @@ var updateBoard = function(){
 			}
 		}
 	}
-	processBoard(1);
+	if(score != previousScore){
+		previousScore = score;
+		//clearInterval(repeat);
+		processBoard(0);
+	}else{
+		processBoard(1);
+	}
 }
 
 var processBoard = function(count){
-	if(count==0){
-		document.getElementById("score").innerHTML = "Score: " + findLinks();
-		repeat = setInterval(updateBoard,1000);
-	}else{
-		clearInterval(repeat);
-	}
+		if(count==0){
+			document.getElementById("score").innerHTML = "Score: " + findLinks();
+			if(score != previousScore){
+				proceed = false;
+				repeat = setInterval(updateBoard,1000);
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			proceed = true;
+			clearInterval(repeat);
+		}
 }
 
 var isTouching = function(a,b){
@@ -171,28 +204,42 @@ var isTouching = function(a,b){
 }
 
 var click = function(){
-	if(clickedOn(cursorY,50) == -1 || clickedOn(cursorX,150) == -1){
-		tiles[previousClick].style.backgroundColor = "#00DA55";
-		previousClick = -1;
-	}else{
-		num = clickedOn(cursorY,50)*size + clickedOn(cursorX,150);
-		
-		if(previousClick === -1){
-			previousClick = num;
-			tiles[num].style.backgroundColor = "#FFFF22";
-		}else if(isTouching(num,previousClick)){
-			tiles[num].style.backgroundColor = "#00DA55";
+	if(proceed){
+		if(clickedOn(cursorY,50) == -1 || clickedOn(cursorX,150) == -1){
 			tiles[previousClick].style.backgroundColor = "#00DA55";
 			previousClick = -1;
-			//switchTiles();
 		}else{
-			tiles[num].style.backgroundColor = "#00DA55";
-			tiles[previousClick].style.backgroundColor = "#00DA55";
-			previousClick = -1;
+			num = clickedOn(cursorY,50)*size + clickedOn(cursorX,150);
+			
+			if(previousClick === -1){
+				previousClick = num;
+				tiles[num].style.backgroundColor = "#FFFF22";
+			}else if(isTouching(num,previousClick)){
+				tiles[num].style.backgroundColor = "#00DA55";
+				tiles[previousClick].style.backgroundColor = "#00DA55";
+				switchTiles(num,previousClick);
+				
+				previousClick = -1;
+			}else{
+				tiles[num].style.backgroundColor = "#00DA55";
+				tiles[previousClick].style.backgroundColor = "#00DA55";
+				previousClick = -1;
+			}
 		}
 	}
 	
+}
+
+var switchTiles = function(a,b){
+	var temp = tiles[a].innerHTML;
+	tiles[a].innerHTML = tiles[b].innerHTML;
+	tiles[b].innerHTML = temp;
 	
+	if(!processBoard(0)){
+		temp = tiles[a].innerHTML;
+		tiles[a].innerHTML = tiles[b].innerHTML;
+		tiles[b].innerHTML = temp;
+	}
 }
 
 /**
