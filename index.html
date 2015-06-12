@@ -1,13 +1,34 @@
 <!DOCTYPE html>
 <html>
 
-<body onload = "run();">
+<body>
 
 	<div id = gameArea>
-		<div id = box>
-			
+		<h1 id = "title">Matching Experiment</h1>
+		<div id = game>
+			<div id = menuScreen>
+				
+				<h3 id = score>Score: 0</h3>
+				<input id = startButton type = "button" value = "start" onclick = "run();" ></input>
+				<input id = "quitButton" type = "button" value = "quit" onclick = "stop();" ></input>
+				
+				<div id = sizeTab>Size</div>
+					<input id = plusSize type = "button" value = "+" onclick = "plusSize();"></input>
+					<input id = minusSize type = "button" value = "-" onclick = "minusSize();"></input>
+					<div id = sizeVal>10</div>
+
+				<div id = jewelTab>Jewels</div>
+					<input id = plusJewl type = "button" value = "+" onclick = "plusJewl();"></input>
+					<input id = minusJewl type = "button" value = "-" onclick = "minusJewl();"></input>
+					<div id = jewlVal>9</div>
+
+				<div id = goalTab>Goal</div>
+					<input id = plusGoal type = "button" value = "+" onclick = "plusGoal();"></input>
+					<input id = minusGoal type = "button" value = "-" onclick = "minusGoal();"></input>
+					<div id = goalVal>3</div>
+				</div>
+			</div>
 		</div>
-		<h3 id = score>Score: 0</h3>
 	</div>
 
 </body>
@@ -17,6 +38,119 @@
 <style>
 *{
 	position:absolute;
+}
+
+input{
+	border: 2px solid;
+	background-color:#999999;
+}
+
+#title{
+	margin-left:200px;
+	margin-Top:10px;
+	width:600px;
+	text-align:center;
+	
+}
+
+#quitButton{
+	margin-Left:75px;
+	margin-Top:505px;
+	width:100px;
+	height:50px;
+}
+#startButton{
+	margin-Left:75px;
+	margin-Top:450px;
+	width:100px;
+	height:50px;
+}
+
+#sizeTab{
+	margin-Left:100px;
+	margin-Top:75px;
+	width:50px;
+	height:50px;
+	text-align:center;
+	line-height:50px;
+}
+#plusSize{
+	margin-Left:150px;
+	margin-Top:100px;
+	width:50px;
+	height:50px;
+}
+#minusSize{
+	margin-Left:50px;
+	margin-Top:100px;
+	width:50px;
+	height:50px;
+}
+#sizeVal{
+	margin-Left:100px;
+	margin-Top:100px;
+	width:50px;
+	height:50px;
+	text-align:center;
+	line-height:50px;
+}
+
+#jewelTab{
+	margin-Left:100px;
+	margin-Top:175px;
+	width:50px;
+	height:50px;
+	text-align:center;
+	line-height:50px;
+}
+#plusJewl{
+	margin-Left:150px;
+	margin-Top:200px;
+	width:50px;
+	height:50px;
+}
+#minusJewl{
+	margin-Left:50px;
+	margin-Top:200px;
+	width:50px;
+	height:50px;
+}
+#jewlVal{
+	margin-Left:100px;
+	margin-Top:200px;
+	width:50px;
+	height:50px;
+	text-align:center;
+	line-height:50px;
+}
+
+#goalTab{
+	margin-Left:100px;
+	margin-Top:275px;
+	width:50px;
+	height:50px;
+	text-align:center;
+	line-height:50px;
+}
+#plusGoal{
+	margin-Left:150px;
+	margin-Top:300px;
+	width:50px;
+	height:50px;
+}
+#minusGoal{
+	margin-Left:50px;
+	margin-Top:300px;
+	width:50px;
+	height:50px;
+}
+#goalVal{
+	margin-Left:100px;
+	margin-Top:300px;
+	width:50px;
+	height:50px;
+	text-align:center;
+	line-height:50px;
 }
 
 
@@ -31,26 +165,23 @@ div{
 
 #gameArea{
 
-	width:800px;
-	height:600px;
+	width:780px;
+	height:580px;
 	
 	margin-Left:0px;
 	margin-Top:0px;
 	
-	background-color: #25f777;
+	background-color: #259940;
 
 }
 
-#box{
-	width:550px;
-	height:550px;
-	
-	margin-Left:125px;
-	margin-Top:25px;
-	
-	background-color: #25f711;
+#score{
+	margin-Left:50px;
+	margin-Top:400px;
+	width:150px;
+	text-align:center;
+	line-height:50px;
 }
-
 
 </style>
 
@@ -66,6 +197,7 @@ div{
 	var repeat;
 	var previousClick = -1;
 	var proceed = true;
+	var play = false;
 
 
 
@@ -75,6 +207,75 @@ document.onmousemove = function(e){
     cursorX = e.pageX;
     cursorY = e.pageY;
 }
+
+var stop = function(){
+	for( var i = 0; i < size; i++){
+		for( var j = 0; j < size; j++){
+			hideDiv(tiles[i*size + j]);
+		}
+	}
+	play = false;
+}
+
+
+var plusSize = function(){
+	temp = parseInt(document.getElementById("sizeVal").innerHTML);
+	if(temp < 10){
+		temp++;
+		document.getElementById("sizeVal").innerHTML = temp;
+	}else{
+		document.getElementById("sizeVal").innerHTML = 10;
+	}
+}
+var minusSize = function(){
+	temp = parseInt(document.getElementById("sizeVal").innerHTML);
+	if(temp > 2){
+		temp--;
+		document.getElementById("sizeVal").innerHTML = temp;
+	}else{
+		document.getElementById("sizeVal").innerHTML = 2;
+	}
+}
+
+var plusJewl = function(){
+	temp = parseInt(document.getElementById("jewlVal").innerHTML);
+	if(temp < 10){
+		temp++;
+		document.getElementById("jewlVal").innerHTML = temp;
+	}else{
+		document.getElementById("jewlVal").innerHTML = 10;
+	}
+}
+var minusJewl = function(){
+	temp = parseInt(document.getElementById("jewlVal").innerHTML);
+	if(temp > 2){
+		temp--;
+		document.getElementById("jewlVal").innerHTML = temp;
+	}else{
+		document.getElementById("jewlVal").innerHTML = 2;
+	}
+}
+
+var plusGoal = function(){
+	temp = parseInt(document.getElementById("goalVal").innerHTML);
+	if(temp < 10){
+		temp++;
+		document.getElementById("goalVal").innerHTML = temp;
+	}else{
+		document.getElementById("goalVal").innerHTML = 10;
+	}
+}
+var minusGoal = function(){
+	temp = parseInt(document.getElementById("goalVal").innerHTML);
+	if(temp > 3){
+		temp--;
+		document.getElementById("goalVal").innerHTML = temp;
+	}else{
+		document.getElementById("goalVal").innerHTML = 3;
+	}
+}
+
+
 
 var moveDiv = function(elem,x,y){
 	elem.style.marginLeft = x + "px";
@@ -155,7 +356,6 @@ var updateBoard = function(){
 	}
 	if(score != previousScore){
 		previousScore = score;
-		//clearInterval(repeat);
 		processBoard(0);
 	}else{
 		processBoard(1);
@@ -167,7 +367,7 @@ var processBoard = function(count){
 			document.getElementById("score").innerHTML = "Score: " + findLinks();
 			if(score != previousScore){
 				proceed = false;
-				repeat = setInterval(updateBoard,1000);
+				repeat = setInterval(updateBoard,500);
 				return true;
 			}else{
 				return false;
@@ -205,11 +405,11 @@ var isTouching = function(a,b){
 
 var click = function(){
 	if(proceed){
-		if(clickedOn(cursorY,50) == -1 || clickedOn(cursorX,150) == -1){
+		if(clickedOn(cursorY,50) == -1 || clickedOn(cursorX,250) == -1){
 			tiles[previousClick].style.backgroundColor = "#00DA55";
 			previousClick = -1;
 		}else{
-			num = clickedOn(cursorY,50)*size + clickedOn(cursorX,150);
+			num = clickedOn(cursorY,50)*size + clickedOn(cursorX,250);
 			
 			if(previousClick === -1){
 				previousClick = num;
@@ -258,25 +458,31 @@ var clickedOn = function(mos,offset){
 }
 
 var run = function(){
+	if(!play){
+		play = true;
+		score = 0;
+		previousScore = 0;
+		document.body.onclick = function() {click()};
+		
+		size = parseInt(document.getElementById("sizeVal").innerHTML);
+		jewels = parseInt(document.getElementById("jewlVal").innerHTML);
+		goal = parseInt(document.getElementById("goalVal").innerHTML);
 
-	document.body.onclick = function() {click()};
-
-	for( var i = 0; i < size; i++){
-		for( var j = 0; j < size; j++){
-			tiles[i*size + j] = document.createElement("div");
-			createDiv(tiles[i*size + j], 500/size ,500/size,(500/size)*j + 150,(500/size)*i + 50,"#00DA55");
-			displayDiv(tiles[i*size+j]);
-			tiles[i*size + j].style.border = "2px solid";
-			tiles[i*size + j].innerHTML  = Math.floor(Math.random() * jewels);
-			tiles[i*size + j].style.textAlign = "center";
-			tiles[i*size + j].style.lineHeight = 500/size + "px";
-			changes[i*size + j] = 0;
+		for( var i = 0; i < size; i++){
+			for( var j = 0; j < size; j++){
+				tiles[i*size + j] = document.createElement("div");
+				createDiv(tiles[i*size + j], 500/size ,500/size,(500/size)*j + 250,(500/size)*i + 50,"#00DA55");
+				displayDiv(tiles[i*size+j]);
+				tiles[i*size + j].style.border = "2px solid";
+				tiles[i*size + j].innerHTML  = Math.floor(Math.random() * jewels);
+				tiles[i*size + j].style.textAlign = "center";
+				tiles[i*size + j].style.lineHeight = 500/size + "px";
+				changes[i*size + j] = 0;
+			}
 		}
-	}
 
 		processBoard(0);
-		
-		//body.onclick = function(){click()};
+	}
 
 }
 
