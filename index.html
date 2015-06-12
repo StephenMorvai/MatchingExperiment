@@ -10,7 +10,7 @@
 				
 				<h3 id = score>Score: 0</h3>
 				<input id = startButton type = "button" value = "start" onclick = "run();" ></input>
-				<input id = "quitButton" type = "button" value = "quit" onclick = "stop();" ></input>
+				<!--<input id = "quitButton" type = "button" value = "quit" onclick = "stop();" ></input>-->
 				
 				<div id = sizeTab>Size</div>
 					<input id = plusSize type = "button" value = "+" onclick = "plusSize();"></input>
@@ -198,6 +198,7 @@ div{
 	var previousClick = -1;
 	var proceed = true;
 	var play = false;
+	var images = [];
 
 
 
@@ -216,6 +217,35 @@ var stop = function(){
 	}
 	play = false;
 }
+
+var getImage = function(num){
+	switch(num){
+		case 0:
+			return "http://i.imgur.com/fmWQn9ob.jpg";//erlenmeyer flask
+		case 1:
+			return "http://i.imgur.com/oegVvh0b.jpg";//meteor
+		case 2:
+			return "http://i.imgur.com/mbZJTxwb.jpg";//microscope
+		case 3:
+			return "http://i.imgur.com/Gi1ZYaPb.jpg";//magnet
+		case 4:
+			return "http://i.imgur.com/zMKU3ntb.jpg";//DNA
+		case 5:
+			return "http://i.imgur.com/FQxJleWb.jpg";//Volcano
+		case 6:
+			return "http://i.imgur.com/S2KypUwb.jpg";//Microbe
+		case 7:
+			return "http://i.imgur.com/DGgSRDQb.jpg";//Rocket
+		case 8:
+			return "http://i.imgur.com/RtRyG35b.jpg";//Planet
+		case 9:
+			return "http://i.imgur.com/rvjzeeGb.jpg";//Atom
+		default:
+			return "http://i.imgur.com/fmWQn9ob.jpg";//erlenmeyer flask
+	}
+}
+
+
 
 
 var plusSize = function(){
@@ -276,6 +306,24 @@ var minusGoal = function(){
 }
 
 
+var createImages = function(){
+	for( var i = 0; i < size; i++){
+		for( var j = 0; j < size; j++){
+			images[i*size + j] = document.createElement("img");
+			createDiv(images[i*size + j], 500/size - 10 ,500/size - 10,(500/size)*j + 250 + 5,(500/size)*i + 50 + 5,"#00DA55");
+			displayDiv(images[i*size+j]);
+			images[i*size + j].src = getImage(parseInt(tiles[i*size + j].innerHTML));
+		}
+	}
+}
+
+var updateImages = function(){
+	for( var i = 0; i < size; i++){
+		for( var j = 0; j < size; j++){
+			images[i*size + j].src = getImage(parseInt(tiles[i*size + j].innerHTML));
+		}
+	}
+}
 
 var moveDiv = function(elem,x,y){
 	elem.style.marginLeft = x + "px";
@@ -340,7 +388,7 @@ var findLinks = function(){
 			
 		}
 	}
-	
+	updateImages();
 	return score;
 }
 
@@ -458,7 +506,7 @@ var clickedOn = function(mos,offset){
 }
 
 var run = function(){
-	if(!play){
+	
 		play = true;
 		score = 0;
 		previousScore = 0;
@@ -475,14 +523,17 @@ var run = function(){
 				displayDiv(tiles[i*size+j]);
 				tiles[i*size + j].style.border = "2px solid";
 				tiles[i*size + j].innerHTML  = Math.floor(Math.random() * jewels);
+				
 				tiles[i*size + j].style.textAlign = "center";
 				tiles[i*size + j].style.lineHeight = 500/size + "px";
 				changes[i*size + j] = 0;
 			}
 		}
 
+		createImages();
+		
 		processBoard(0);
-	}
+	
 
 }
 
