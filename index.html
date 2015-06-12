@@ -154,7 +154,7 @@ input{
 }
 
 
-div{
+div,img{
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -487,6 +487,7 @@ var switchTiles = function(a,b){
 		temp = tiles[a].innerHTML;
 		tiles[a].innerHTML = tiles[b].innerHTML;
 		tiles[b].innerHTML = temp;
+		updateImages();
 	}
 }
 
